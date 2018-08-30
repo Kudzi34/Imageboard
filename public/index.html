@@ -7,6 +7,7 @@
     </head>
     <body>
 <div id="main">
+
     <form>
         <input v-model= 'form.username' type="text" name="username" placeholder="username">
         <input v-model = 'form.title' type="text" name="title" placeholder="title">
@@ -18,14 +19,42 @@
 
        <div class="imageBox" v-if="images.length > 0" v-for="image in images">
 
-           <img class ='image':src="image.url">
+           <img class ='image':src="image.url" @click ="setCurrentImage(image.id)" >
            <p class="title">{{image.title}}</p>
 
-       </div>
+        </div>
+
 
      </div>
+        <image-component v-if="show" :id="id" v-on:close="hide"></image-component>
 
- </div>
+
+
+    </div>
+
+
+    <script id="template1" type="text/template">
+        <div id="modal-popup">
+            <div id="infoPopup">
+                <img class="image" v-bind:src="info.url" @click="closePopup">
+                <h2>{{ info.title }}</h2>
+                <p>{{ info.name }} </p>
+                <p>{{ info.description }}</p>
+                <form>
+                    <input v-model = "form.comment" type = "text" name = "comment" placeholder = "comment">
+                    <input v-model = "form.username" type = "text" name = "username" placeholder = "username">
+                    <button v-on:click="addComments"> Submit </button>
+                </form>
+                <div class="commentBox">
+                    <div v-if="comments.length > 0" v-for="comm in comments" >
+                        <p>{{comm.comment}}</p>
+                        <p>{{comm.username}}</p>
+                    </div>
+                 </div>
+            </div>
+        </div>
+    </script>
+
 
 
 

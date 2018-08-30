@@ -46,9 +46,30 @@ app.get("/images", (req, res) => {
             console.log("error:", error);
         });
 });
+app.get("/images/:image_id", (req, res) => {
+    console.log(req.params.image_id);
+    var imageID = req.params.image_id;
+    db.getOneImage(imageID)
+        .then(result => {
+            console.log("First Result", result.rows);
+            var ImageInfo = result.rows;
+            db.selectComments(req.params.image_id).then(result => {
+                //console.log("Second Results", result.rows);
+                var totalInfo = ImageInfo.concat(result.rows);
+                // console.log("All Results: ", totalInfo);
+                res.json(totalInfo);
+            });
+            // console.log("Here are the results:", results.rows);
+            // res.json = results.rows;
+
+            // res.render("index");
+        })
+        .catch(err => {
+            console.log("Error in extracting One Image:", err);
+        });
+});
 
 app.post("/upload", uploader.single("file"), s3.upload, (req, res) => {
-    console.log(req.body);
     db.writeFileTo(
         config.s3Url + req.file.filename,
         req.body.title,
@@ -56,13 +77,11 @@ app.post("/upload", uploader.single("file"), s3.upload, (req, res) => {
         req.body.username
     )
         .then(({ rows }) => {
-            console.log("working");
             res.json({
                 image: rows[0]
             });
         })
         .catch(error => {
-            console.log("there is an error in inserting", error);
             res.status(500).json({
                 success: false
             });

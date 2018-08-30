@@ -29,3 +29,9 @@ INSERT INTO images (url, username, title, description) VALUES (
     'Hello Berlin',
     'This is going to be worth a lot of money one day.'
 );
+
+CREATE TABLE comments(
+    id SERIAL PRIMARY key
+    image_id INTEGER REFERENCES images(id),
+    comment
+)
