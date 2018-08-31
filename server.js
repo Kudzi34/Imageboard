@@ -1,17 +1,13 @@
 const express = require("express");
 const app = express();
-const fs = require("fs");
+//const fs = require("fs");
 const db = require("./sql/db.js");
 const bp = require("body-parser");
 const s3 = require("./s3");
 const config = require("./config");
 app.use(express.static("./public"));
 
-app.use(
-    bp.urlencoded({
-        extended: false
-    })
-);
+app.use(require("body-parser").json());
 /////////////Copied and pasted from notes/////////////////////////////////////////
 
 var multer = require("multer");
@@ -46,21 +42,33 @@ app.get("/images", (req, res) => {
             console.log("error:", error);
         });
 });
+
+app.get("/moreImages/:lastImageId", (req, res) => {
+    console.log("More Images Req: ", req.params.lastImageId);
+
+    db.getMoreImages(req.params.lastImageId)
+        .then(results => {
+            res.json(results.rows);
+            //console.log(results.rows);
+        })
+        .catch(err => {
+            console.log("Error in extracting MORE images:", err);
+        });
+});
 app.get("/images/:image_id", (req, res) => {
-    console.log(req.params.image_id);
+    //console.log(req.params.image_id);
     var imageID = req.params.image_id;
     db.getOneImage(imageID)
         .then(result => {
-            console.log("First Result", result.rows);
             var ImageInfo = result.rows;
             db.selectComments(req.params.image_id).then(result => {
-                //console.log("Second Results", result.rows);
+                console.log("Second Results", result.rows);
                 var totalInfo = ImageInfo.concat(result.rows);
                 // console.log("All Results: ", totalInfo);
                 res.json(totalInfo);
             });
             // console.log("Here are the results:", results.rows);
-            // res.json = results.rows;
+            //res.json = results.rows;
 
             // res.render("index");
         })
@@ -69,6 +77,20 @@ app.get("/images/:image_id", (req, res) => {
         });
 });
 
+app.post("/images/:image_id", (req, res) => {
+    console.log("my Body: ", req.body.comment);
+    //console.log("Hre is our post request for images", req.params.image_id);
+    db.insertComments(req.params.image_id, req.body.comment, req.body.username)
+        .then(results => {
+            res.json(results.rows);
+        })
+        .catch(err => {
+            //console.log("Error in writeFileTo: ", err);
+            res.status(500).json({
+                success: false
+            });
+        });
+});
 app.post("/upload", uploader.single("file"), s3.upload, (req, res) => {
     db.writeFileTo(
         config.s3Url + req.file.filename,

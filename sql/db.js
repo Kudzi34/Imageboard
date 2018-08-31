@@ -48,3 +48,13 @@ exports.writeFileTo = (url, title, description, username) => {
         username || null
     ]);
 };
+
+exports.getMoreImages = lastId => {
+    const q = `
+    SELECT * FROM images
+    WHERE id < $1
+    ORDER BY id DESC
+    LIMIT 10;
+    `;
+    return db.query(q, [lastId]);
+};

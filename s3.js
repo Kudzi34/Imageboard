@@ -12,7 +12,6 @@ const client = knox.createClient({
     bucket: "spicedling"
 });
 exports.upload = function(req, res, next) {
-    console.log("INSIDE S3", req.file);
     const s3Request = client.put(req.file.filename, {
         "Content-Type": req.file.mimetype,
         "Content-Length": req.file.size,

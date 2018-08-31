@@ -14,14 +14,10 @@
         },
 
         mounted: function() {
-            console.log("this Id:", this.id);
             var app = this;
             axios.get("/images/" + this.id).then(res => {
-                //                console.log("somthing is here", res.data[0]);
                 app.info = res.data[0];
-
                 app.comments = app.comments.concat(res.data);
-                //console.log(app.info);
             });
         },
 
@@ -40,7 +36,6 @@
                 };
 
                 axios.post("/images/" + this.id, commentInfo).then(res => {
-                    console.log(commentInfo);
                     app.comments.unshift(res.data[0]);
                 });
             }
@@ -50,6 +45,7 @@
     var app = new Vue({
         el: "#main",
         data: {
+            lastImageId: "",
             images: [],
             id: "",
             show: "",
@@ -86,11 +82,21 @@
             setCurrentImage: function(image_id) {
                 this.id = image_id;
                 this.show = true;
-                console.log("Our Id is here: ", image_id);
-                console.log(this.id);
-                axios.post("/images/" + image_id).then(response => {
-                    //     console.log("I am a hero", response);
-                });
+                axios.post("/images/" + image_id).then(response => {});
+            },
+            getMoreImages: function() {
+                this.lastImageId = this.images[this.images.length - 1].id;
+                console.log(this.lastImageId);
+                axios
+                    .get("/moreImages/" + this.lastImageId, {
+                        params: {
+                            lastImageId: this.images[this.images.length - 1].id
+                        }
+                    })
+                    .then(function(res) {
+                        console.log("resp in POST /upload: ", res.data);
+                        app.images = app.images.concat(res.data);
+                    });
             }
         }
     });
