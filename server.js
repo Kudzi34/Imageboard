@@ -62,7 +62,6 @@ app.get("/images/:image_id", (req, res) => {
         .then(result => {
             var ImageInfo = result.rows;
             db.selectComments(req.params.image_id).then(result => {
-                console.log("Second Results", result.rows);
                 var totalInfo = ImageInfo.concat(result.rows);
                 // console.log("All Results: ", totalInfo);
                 res.json(totalInfo);
@@ -78,14 +77,11 @@ app.get("/images/:image_id", (req, res) => {
 });
 
 app.post("/images/:image_id", (req, res) => {
-    console.log("my Body: ", req.body.comment);
-    //console.log("Hre is our post request for images", req.params.image_id);
     db.insertComments(req.params.image_id, req.body.comment, req.body.username)
         .then(results => {
             res.json(results.rows);
         })
         .catch(err => {
-            //console.log("Error in writeFileTo: ", err);
             res.status(500).json({
                 success: false
             });

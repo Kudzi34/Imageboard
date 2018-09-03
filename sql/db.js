@@ -30,7 +30,8 @@ exports.insertComments = (image_id, comment, username) => {
 exports.getImages = () => {
     const q = `
         SELECT * FROM images
-        ORDER BY id DESC;
+        ORDER BY id DESC
+        LIMIT 6;
     `;
 
     return db.query(q);
@@ -49,12 +50,12 @@ exports.writeFileTo = (url, title, description, username) => {
     ]);
 };
 
-exports.getMoreImages = lastId => {
+exports.getMoreImages = lastImageId => {
     const q = `
     SELECT * FROM images
     WHERE id < $1
     ORDER BY id DESC
-    LIMIT 10;
+    LIMIT 6;
     `;
-    return db.query(q, [lastId]);
+    return db.query(q, [lastImageId]);
 };

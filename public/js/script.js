@@ -84,20 +84,19 @@
                 this.show = true;
                 axios.post("/images/" + image_id).then(response => {});
             },
-            getMoreImages: function() {
-                this.lastImageId = this.images[this.images.length - 1].id;
-                console.log(this.lastImageId);
-                axios
-                    .get("/moreImages/" + this.lastImageId, {
-                        params: {
-                            lastImageId: this.images[this.images.length - 1].id
-                        }
-                    })
-                    .then(function(res) {
-                        console.log("resp in POST /upload: ", res.data);
-                        app.images = app.images.concat(res.data);
-                    });
+            getMoreImages: function(e) {
+                e.preventDefault();
+                var lastImageId = this.images[this.images.length - 1].id;
+                console.log("working request", this.lastImageId);
+                axios.get("/moreImages/" + lastImageId).then(function(res) {
+                    //console.log("resp in POST /upload: ", res.data);
+                    app.images = app.images.concat(res.data);
+                });
             }
         }
+    });
+    addEventListener("hashchange", () => {
+        var imageId = location.hash.slice(1);
+        app.setCurrentImage(imageId);
     });
 })();

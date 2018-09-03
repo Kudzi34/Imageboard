@@ -7,14 +7,16 @@
     </head>
     <body>
 <div id="main">
+        <h1>CRAZY MEMES IMAGE UPLOAD</h1>
+
 
     <form>
         <input v-model= 'form.username' type="text" name="username" placeholder="username">
         <input v-model = 'form.title' type="text" name="title" placeholder="title">
         <input v-model= 'form.description' type="text" name="description" placeholder="description">
         <input type="file" accept="image/*">
-        <button v-on:click ='uploadFile'>Upload</button>
-        <button v-on:click = 'getMoreImages'>MORE</button>
+        <button class ="button" v-on:click ='uploadFile'>Upload</button>
+        <button  class ="button" @click = 'getMoreImages'>MORE</button>
     </form>
     <div id="gridBox">
 
@@ -39,17 +41,16 @@
             <div id="infoPopup">
                 <img class="image" v-bind:src="info.url" @click="closePopup">
                 <h2>{{ info.title }}</h2>
-                <p>{{ info.name }} </p>
-                <p>{{ info.description }}</p>
-                <form>
+                <p id="infoD">{{ info.description }}</p>
+                <form id="form2">
                     <input v-model = "form.comment" type = "text" name = "comment" placeholder = "comment">
                     <input v-model = "form.username" type = "text" name = "username" placeholder = "username">
-                    <button v-on:click="addComments"> Submit </button>
+                    <button class="button" v-on:click="addComments"> Submit </button>
                 </form>
                 <div class="commentBox">
                     <div v-if="comments.length > 0" v-for="comm in comments" >
-                        <p>{{comm.comment}}</p>
-                        <p>{{comm.username}}</p>
+                        <p class="parag">{{comm.comment}}</p>
+                        <p class="parag">{{comm.username}}</p>
                     </div>
                  </div>
             </div>
